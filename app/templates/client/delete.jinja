@@ -1,0 +1,49 @@
+{# app/templates/client/delete.jinja #}
+
+{% extends "_shared/delete.jinja" %}
+
+{% set mod_title = "Client" %}
+{% set mod_name = "client" %}
+{% set edit_handler = "get_edit_client" %}
+
+{% block confirm %}
+  {% set account_number = client.account_number %}
+  {% set status = client.status %}
+  {% set contact_name = client.contact_name %}
+  {% set email = client.email %}
+  {% set phone = client.phone %}
+  {% set business_name = client.business_name if client.business_name else '' %}
+  {% set street_address_1 = client.street_address_1 %}
+  {% set street_address_2 = client.street_address_2 if client.street_address_2 else '' %}
+  {% set city = client.city %}
+  {% set state = client.state %}
+  {% set zip_code = client.zip_code %}
+
+  <h2 class="danger">ARE YOU SURE?</h2>
+  <p>The client will be permanently removed from the company database. This action cannot be undone!</p>
+  <form method="post" class="button-group">
+    <button class="delete">
+      Confirm Delete
+    </button>
+    <a href="{{ url_for('get_edit_client', id58=id58) }}" class="cancel">Cancel</a>
+  </form>
+  <h2>{{ account_number }}</h2>
+  <h3>Account Status:</h3>
+  <p>{{ status }}</p>
+  <h3>Contact Name:</h3>
+  <p>{{ contact_name }}</p>
+  <h3>Email:</h3>
+  <p>{{ email }}</p>
+  <h3>Phone Number:</h3>
+  <p>{{ phone }}</p>
+  {% if business_name %}
+    <h3>Business Name:</h3>
+    <p>{{ business_name }}</p>
+  {% endif %}
+  <h3>Address:</h3>
+  <p>{{ street_address_1 }}</p>
+  {% if street_address_2 %}
+    <p>{{ street_address_2 }}</p>
+  {% endif %}
+  <p>{{ city }}, {{ state }}  {{ zip_code }}</p>
+{% endblock confirm %}

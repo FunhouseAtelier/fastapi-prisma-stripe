@@ -1,0 +1,43 @@
+{# app/templates/home.jinja #}
+
+{% extends "__layout.jinja" %}
+
+{% block title %}Main Menu{% endblock title %}
+
+{% block content %}
+  <main>
+    <h1>Main Menu</h1>
+    <div class="button-group">
+      <a href="{{ url_for('get_all_associates') }}">
+        All Associates
+      </a>
+      <a href="{{ url_for('get_new_associate') }}">
+        New Associate
+      </a>
+    </div>
+    <div class="button-group">
+      <a href="{{ url_for('get_all_clients') }}">
+        All Clients
+      </a>
+      <a href="{{ url_for('get_new_client') }}">
+        New Client
+      </a>
+    </div>
+    <div class="button-group">
+      <a href="{{ url_for('get_all_products') }}">
+        All Products
+      </a>
+      <a href="{{ url_for('get_new_product') }}">
+        New Product
+      </a>
+    </div>
+    <div class="button-group">
+      <a href="{{ url_for('get_all_orders') }}">
+        All Orders
+      </a>
+      <a href="{{ url_for('get_new_order') }}">
+        New Order
+      </a>
+    </div>
+  </main>
+{% endblock content %}

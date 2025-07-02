@@ -1,0 +1,23 @@
+{# app/templates/order/all.jinja #}
+
+{% extends "_shared/all.jinja" %}
+
+{% set mod_title = "Order" %}
+{% set mod_name = "order" %}
+{% set new_handler = "get_new_order" %}
+
+{% block info %}
+  {% for order in orders %}
+    {% set id58 = id58_by_id[order.id] %}
+    {% set audited_at = order.audited_at|format_date if order.audited_at else '[UNAUDITED]' %}
+
+    <div class="{{ mod_name }}-line">
+      <a href="{{ url_for('get_show_' ~ mod_name, id58=id58) }}">
+      <h2>{{ order.invoice_number }}</h2>
+      </a>
+      <p>{{ order.status }}</p>
+      <p>{{ order.total_due|format_price }}</p>
+      <p>{{ audited_at }}</p>
+    </div>
+  {% endfor %}
+{% endblock info %}

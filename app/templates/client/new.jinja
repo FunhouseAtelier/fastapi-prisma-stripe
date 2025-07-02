@@ -1,0 +1,59 @@
+{# app/templates/client/new.jinja #}
+
+{% extends "_shared/new.jinja" %}
+{% from "_shared/macros.jinja" import field %}
+
+{% set mod_title = "Client" %}
+{% set mod_name = "client" %}
+{% set create_handler = "post_new_client" %}
+
+{% block form_fields %}
+  {% set select_field = "components/fields/select.jinja" %}
+  {% set text_field = "components/fields/text.jinja" %}
+  {% set field = {
+    "label": "Account Status",
+    "name": "status",
+    "options": [
+      { "value": "active", "label": "active", "selected": form.status == "active" },
+      { "value": "inactive", "label": "inactive", "selected": form.status == "inactive" },
+      { "value": "prospect", "label": "prospect", "selected": form.status == "prospect" },
+      { "value": "suspended", "label": "suspended", "selected": form.status == "suspended" },
+    ] } %}
+  {% include select_field %}
+
+  {% set field = {"label":"Contact Name", "name":"contact_name"} %}
+  {% include text_field %}
+
+  {% set field = {"label":"Email Address", "name":"email"} %}
+  {% include text_field %}
+
+  {% set field = {"label":"Phone Number", "name":"phone"} %}
+  {% include text_field %}
+
+  {% set field = {
+    "label": "Business Name",
+    "name": "business_name",
+    "required": false} %}
+  {% include text_field %}
+
+  {% set field = {
+    "label": "Street Address 1",
+    "name": "street_address_1"} %}
+  {% include text_field %}
+
+  {% set field = {
+    "label": "Street Address 2",
+    "name": "street_address_2",
+    "required": false} %}
+  {% include text_field %}
+
+  {% set field = {"label":"City", "name":"city"} %}
+  {% include text_field %}
+
+  {% set field = {"label":"State", "name":"state"} %}
+  {% include text_field %}
+
+  {% set field = {"label":"ZIP Code", "name":"zip_code"} %}
+  {% include text_field %}
+
+{% endblock form_fields %}

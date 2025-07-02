@@ -1,0 +1,36 @@
+{# app/templates/components/fields/multicheck.jinja #}
+
+{% set name = field.get("name", '_anonymous_') %}
+{% set has_error = name in field_errors %}
+{% set label = field.get("label", '') %}
+{% set options = field.get("options", []) %}
+{% set form_checked = form[name] if form[name] is iterable else list(form[name]) %}
+{% set required = field.get("required", false) %}
+{% set errors = field_errors.get(name, []) if field_errors else []  %}
+
+<div class="multicheck-field form-field">
+  <label class="{% if has_error %}field-error{% endif %}">
+    {{ label }}:{% if required %} <span class="required">*</span>{% endif %}
+  </label>
+  {% for option in options %}
+    
+    {% set checked = field.checked if field.checked else (option.value in  form_checked) %}
+    <div class="checkbox-group">
+      <label>
+        <input
+          type="checkbox"
+          name="{{ name }}"
+          value="{{ option.value }}"
+          class="{% if has_error %}field-error{% endif %}"
+          {% if checked %}checked{% endif %}
+        >
+        {{ option.label }}
+      </label>
+    </div>
+  {% endfor %}
+  <div class="field-error-info">
+    {% for error in errors %}
+      <span>{{ error }} </span>
+    {% endfor %}
+  </div>
+</div>

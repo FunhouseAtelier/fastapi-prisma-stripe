@@ -1,0 +1,28 @@
+{# app/templates/product/delete.jinja #}
+
+{% extends "_shared/delete.jinja" %}
+
+{% set mod_title = "Product" %}
+{% set mod_name = "product" %}
+{% set edit_handler = "get_edit_product" %}
+
+{% block confirm %}
+    {% set name = product.name %}
+    {% set description = product.description or '' %}
+    {% set unit = product.unit %}
+    {% set unit_price = product.unit_price %}
+
+  <h2 class="danger">ARE YOU SURE?</h2>
+  <p>The product will be permanently removed from the company database. This action cannot be undone!</p>
+  <form method="post" class="button-group">
+    <button class="delete">
+      Confirm Delete
+    </button>
+    <a href="{{ url_for('get_edit_product', id58=id58) }}" class="cancel">Cancel</a>
+  </form>
+  <h2>{{ name }}</h2>
+  <h3>Unit:</h3>
+  <p>{{ unit }}</p>
+  <h3>Unit Price:</h3>
+  <p>{{ unit_price|format_price }}</p>
+{% endblock confirm %}

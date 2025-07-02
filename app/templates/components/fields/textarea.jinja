@@ -1,0 +1,18 @@
+{# app/templates/components/fields/textarea.jinja #}
+
+{% set label = field.get("label", '') %}
+{% set required = field.get("required", true) %}
+
+<div class="field">
+  <label for="{{ field.name }}">{{ label }}:{% if required %} <span class="required">*</span>{% endif %}</label>
+  <textarea
+    name="{{ field.name }}"
+    id="{{ field.name }}"
+    rows="{{ field.get('rows', 4) }}"
+    maxlength="{{ field.get('maxlength', 1000) }}"
+    {% if required %}required{% endif %}
+  >{{ form[field.name] if field.name in form else '' }}</textarea>
+  {% if field.name in field_errors %}
+    <div class="error">{{ field_errors[field.name][0] }}</div>
+  {% endif %}
+</div>

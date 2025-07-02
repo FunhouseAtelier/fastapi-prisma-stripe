@@ -1,0 +1,23 @@
+{# app/templates/components/fields/price.jinja #}
+
+{# This is a basic text input field for prices, rendered as a string like "19.99" #}
+
+{# Convert cents to dollars for display, preserving 2 decimal places #}
+{% set value = (form[field.name] if field.name in form else 0)|format_2f %}
+{% set required = field.get("required", true) %}
+
+<div class="field">
+  <label for="{{ field.name }}">{{ field.label }}:{% if required %} <span class="required">*</span>{% endif %}</label>
+  <input
+    type="text"
+    name="{{ field.name }}"
+    id="{{ field.name }}"
+    value="{{ value }}"
+    inputmode="decimal"
+    pattern="^\d+(\.\d{1,2})?$"
+    required="{{ 'required' if field.get('required', True) else '' }}"
+  />
+  {% if field.name in field_errors %}
+    <div class="error">{{ field_errors[field.name][0] }}</div>
+  {% endif %}
+</div>

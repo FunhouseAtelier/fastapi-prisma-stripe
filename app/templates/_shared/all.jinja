@@ -1,0 +1,21 @@
+{# app/templates/_shared/all.jinja #}
+
+{% extends "__layout.jinja" %}
+
+{% block title %}All {{ mod_title }}s{% endblock title %}
+
+{% block content %}
+  <main class="xl all">
+    <a href="{{ url_for(new_handler) }}" class="new-icon" aria-label="New">
+      +
+    </a>
+    <a href="{{ url_for('get_home') }}" class="close-icon" aria-label="Close">
+      🗙
+    </a>
+    <h1>All {{ mod_title }}s</h1>
+    {% block info %}{% endblock info %}
+    <div class="button-group">
+      <a href="{{ url_for('get_home') }}" class="cancel">Cancel</a>
+    </div>
+  </main>
+{% endblock content %}

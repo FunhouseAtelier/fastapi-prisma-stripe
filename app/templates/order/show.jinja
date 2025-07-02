@@ -1,0 +1,24 @@
+{# app/templates/order/show.jinja #}
+
+{% extends "_shared/show.jinja" %}
+
+{% set mod_title = "Order" %}
+{% set mod_name = "order" %}
+{% set edit_handler = "get_edit_order" %}
+{% set all_handler = "get_all_orders" %}
+
+{% block info %}
+  {% set audited_at = order.audited_at|format_date if order.audited_at else '[UNAUDITED]' %}
+
+  <h2>{{ order.invoice_number }}</h2>
+  <h3>Order Status:</h3>
+  <p>{{ order.status }}</p>
+  <h3>Sales Tax:</h3>
+  <p>{{ order.sales_tax|format_pct }}</p>
+  <h3>Total Due:</h3>
+  <p>{{ order.total_due|format_price }}</p>
+  <h3>Audited At:</h3>
+  <p>{{ audited_at }}</p>
+  <h3>Audit Notes:</h3>
+  <p>{{ order.audit_notes }}</p>
+{% endblock info %}

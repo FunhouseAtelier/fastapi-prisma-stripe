@@ -1,0 +1,49 @@
+{# app/templates/components/fields/select.jinja #}
+
+{% set name = field.get("name", '_anonymous_') %}
+{% set has_error = name in field_errors %}
+{% set label = field.get("label", '') %}
+{% set options = field.get("options", []) %}
+{% set required = field.get("required", true) %}
+{% set unselect = field.get("unselect", false) %}
+{% set errors = field_errors.get(name, []) if field_errors else []  %}
+
+<div class="select-field form-field">
+  <label for="{{ name }}"
+         class="{% if has_error %}field-error{% endif %}">
+    {{ label }}:{% if required %} <span class="required">*</span>{% endif %}
+  </label>
+
+  <select id="{{ name }}"
+          name="{{ name }}"
+          {% if required %}required{% endif %}
+          class="{% if has_error %}field-error{% endif %}">
+          
+    {% if unselect or not required %}
+      <option value=""
+              {% if form[name] is not defined or form[name] == "" %}selected{% endif %}>
+        -- Select {{ label|lower }} --
+      </option>
+    {% endif %}
+
+    {% for option in options %}
+      {% if option is string %}
+        <option value="{{ option }}"
+                {% if form[name] == option %}selected{% endif %}>
+          {{ option }}
+        </option>
+      {% else %}
+        <option value="{{ option.value }}"
+                {% if form[name] == option.value %}selected{% endif %}>
+          {{ option.label }}
+        </option>
+      {% endif %}
+    {% endfor %}
+  </select>
+
+  <div class="field-error-info">
+    {% for error in errors %}
+      <span>{{ error }} </span>
+    {% endfor %}
+  </div>
+</div>

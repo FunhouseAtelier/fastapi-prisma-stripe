@@ -1,0 +1,103 @@
+{# app/templates/__layout.jinja #}
+
+{% from "_shared/macros.jinja" import render_flash %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta
+    name="description"
+    content="Funhouse Atelier – Creative digital services and online business solutions. Manage associates, orders, and more with ease."
+  />
+  <meta
+    name="keywords"
+    content="funhouse, atelier, digital services, fastapi, prisma, web development, online business, associate management"
+  />
+  <link rel="stylesheet" href="{{ url_for('static', path='css/reset.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', path='css/app.css') }}?v={{ now|int }}">
+  <title>{% block title %}Funhouse Atelier{% endblock title %}</title>
+</head>
+<body>
+  {{ render_flash(flash) }}
+  {% block content %}{% endblock content %}    
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // Select all inputs
+      const inputs = document.querySelectorAll("input");
+
+      inputs.forEach(input => {
+        input.addEventListener("input", () => {
+          input.classList.remove("field-error");
+
+          // Remove the class from the matching label
+          const label = document.querySelector(`label[for="${input.id}"]`);
+          if (label) {
+            label.classList.remove("field-error");
+          }
+
+          // Clear error message inside .field-error-info
+          const fieldWrapper = input.closest(".form-field, .field");
+          if (fieldWrapper) {
+            const errorInfo = fieldWrapper.querySelector(".field-error-info");
+            if (errorInfo) {
+              errorInfo.innerHTML = "";
+            }
+          }
+        });
+      });
+    });
+    document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll("select[multiple][data-max]").forEach(select => {
+      select.addEventListener("change", () => {
+        const max = parseInt(select.dataset.max);
+        const selected = Array.from(select.selectedOptions);
+        if (selected.length > max) {
+          alert(`You can only select up to ${max} items.`);
+          selected[max].selected = false;
+        }
+      });
+    });
+  });
+  </script>
+  <script>
+    async function addLineItem() {
+      // For now, this could prompt, or later open a modal or fetch a product picker
+      const lineItemId = Math.floor(Math.random() * 1000000000000);
+
+      // Optionally: fetch the line item to get its label (e.g., name or SKU)
+      let label = `LineItem ${lineItemId}`;
+      try {
+        const res = await fetch(`/api/lineitem/${lineItemId}`);
+        if (res.ok) {
+          const data = await res.json();
+          label = `${data.name} (${data.unit_price / 100} USD)`;
+        }
+      } catch (err) {
+        console.warn("Failed to fetch line item info", err);
+      }
+
+      // Create the line item UI block
+      const itemDiv = document.createElement("div");
+      itemDiv.className = "line-item";
+      itemDiv.dataset.id = lineItemId;
+      itemDiv.innerHTML = `
+        <span class="label">${label}</span>
+        <input type="hidden" name="lineitem_ids" value="${lineItemId}">
+        <button type="button" onclick="removeLineItem(this)">Remove</button>
+      `;
+
+      document.getElementById("line-items-list").appendChild(itemDiv);
+    }
+
+    function removeLineItem(button) {
+      const itemDiv = button.closest(".line-item");
+      if (itemDiv) itemDiv.remove();
+    }
+  </script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,34 @@
+{# app/templates/components/fields/date.jinja #}
+
+{% set name = field.get("name", '_anonymous_') %}
+{% set has_error = name in field_errors %}
+{% set label = field.get("label", '') %}
+{% set value =
+    field.value
+    if field.value else (
+        form[name].strftime("%Y-%m-%d")
+        if form[name] else ''
+    )
+%}
+{% set required = field.get("required", true) %}
+{% set errors = field_errors.get(name, []) if field_errors else []  %}
+
+<div class="date-field form-field">
+  <label for="{{ name }}" class="{% if has_error %}field-error{% endif %}">
+    {{ label }}:{% if required %} <span class="required">*</span>{% endif %}
+  </label>
+
+  <input
+    id="{{ name }}"
+    name="{{ name }}"
+    type="date"
+    value="{{ value }}"
+    class="{% if has_error %}field-error{% endif %}"
+    {% if required %}required{% endif %}
+  >
+  <div class="field-error-info">
+    {% for error in errors %}
+      <span>{{ error }} </span>
+    {% endfor %}
+  </div>
+</div>

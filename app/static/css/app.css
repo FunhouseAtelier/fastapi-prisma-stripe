@@ -1,0 +1,295 @@
+/* app/static/css/app.css */
+
+html,
+body {
+  font-family: sans-serif;
+  overflow-x: hidden;
+}
+
+body {
+  font-size: 1rem;
+  padding: 1rem;
+  width: 100%;
+  min-height: 100vh;
+  background-color: #a17d51;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem; /* Reduced for mobile */
+}
+
+h1 {
+  font-size: 1.75rem;
+  opacity: 75%;
+  color: #01172d;
+  margin-top: 2rem;
+}
+
+h2 {
+  font-size: 1.5rem;
+}
+
+h2.danger {
+  color: #f21701;
+}
+
+select[multiple] option:checked {
+  font-weight: bold;
+}
+
+/* ─────────────── Button Group ─────────────── */
+.button-group {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0.75rem 0;
+}
+.button-group a,
+.button-group button {
+  display: block;
+  width: 100%;
+  text-align: center;
+  font-size: 1rem;
+  padding: 0.5rem;
+  background-color: #820263;
+  color: #eeeeee;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-weight: bold;
+}
+.button-group a.cancel,
+.button-group button.cancel {
+  background-color: #01172d;
+}
+.button-group a.delete,
+.button-group button.delete {
+  background-color: #f21701;
+}
+.button-group a.add,
+.button-group button.add {
+  background-color: #038836;
+}
+
+@media (min-width: 768px) {
+  .button-group {
+    flex-direction: row;
+    justify-content: center;
+    gap: 1rem;
+  }
+  .button-group a,
+  .button-group button {
+    width: auto;
+    padding: 0.75rem 1.5rem;
+  }
+}
+
+/* ─────────────── All Lines ─────────────── */
+.associate-line,
+.client-line,
+.lineitem-line,
+.product-line,
+.order-line,
+.line-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+  padding: 0.75rem;
+  background-color: #ede5db;
+  border-radius: 0.5rem;
+}
+.associate-line a,
+.client-line a,
+.lineitem-line a,
+.product-line a,
+.order-line a,
+.line-item a {
+  color: #820263;
+  font-weight: bold;
+  cursor: pointer;
+}
+@media (min-width: 768px) {
+  .associate-line,
+  .client-line,
+  .lineitem-line,
+  .product-line,
+  .order-line,
+  .line-item {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+  }
+  .associate-line a,
+  .client-line a,
+  .lineitem-line a,
+  .product-line a,
+  .order-line a,
+  .line-item a {
+    font-size: inherit;
+  }
+}
+
+/* ─────────────── Main Containers ─────────────── */
+main {
+  position: relative;
+  width: 100%;
+  padding: 1rem 0.5rem;
+  box-sizing: border-box;
+  border-radius: 0.5rem;
+  background-color: #feeec2;
+  color: #01172d;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+main.lg {
+  max-width: 1200px;
+}
+main.xl {
+  max-width: 1500px;
+}
+
+/* ─────────────── New Associate Form ─────────────── */
+main.new form,
+main.edit form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+main.new form input[type="text"],
+main.new form input[type="date"],
+main.new form select,
+main.new form textarea,
+main.edit form input[type="text"],
+main.edit form input[type="date"],
+main.edit form select,
+main.edit form textarea {
+  color: #01172d;
+  font-size: 1rem;
+  width: 100%;
+  padding: 0.5rem;
+  box-sizing: border-box;
+  border: solid 2px #888888;
+  border-radius: 0.25rem;
+}
+main.new form label,
+main.edit form label {
+  font-weight: 600;
+}
+main.new form input[type="text"],
+main.new form input[type="date"],
+main.new form select,
+main.new form textarea {
+  background-color: #d2fee3;
+}
+main.edit form input[type="text"],
+main.edit form input[type="date"],
+main.edit form select,
+main.edit form textarea {
+  background-color: #ede5db;
+}
+
+/* ─────────────── Navigation Icons ─────────────── */
+main .close-icon,
+main .new-icon,
+main .edit-icon,
+main .back-icon {
+  position: absolute;
+  font-size: 1.5rem;
+  cursor: pointer;
+  text-decoration: none;
+  line-height: 1;
+  opacity: 75%;
+}
+main .close-icon {
+  top: 0.5rem;
+  right: 0.75rem;
+  font-size: 1.5rem;
+}
+main .new-icon {
+  top: 0.3rem;
+  font-size: 2.25rem;
+}
+main .edit-icon {
+  top: 0.5rem;
+  font-size: 1.75rem;
+}
+main .back-icon {
+  top: 0.4rem;
+  font-size: 2rem;
+}
+main .new-icon,
+main .edit-icon,
+main .back-icon {
+  left: 0.75rem;
+}
+main .close-icon,
+main .back-icon {
+  color: #01172d;
+}
+main .new-icon,
+main .edit-icon {
+  color: #820263;
+}
+
+@media (min-width: 768px) {
+  main .close-icon {
+    font-size: 2rem;
+    top: 0.5rem;
+    right: 1rem;
+  }
+  main .new-icon,
+  main .edit-icon,
+  main .back-icon {
+    left: 1rem;
+  }
+  main .new-icon {
+    font-size: 3rem;
+    top: 0.25rem;
+  }
+  main .edit-icon {
+    font-size: 2.5rem;
+    top: 0.4rem;
+  }
+  main .back-icon {
+    font-size: 2.75rem;
+    top: 0.25rem;
+  }
+}
+
+/* ─────────────── Flash Messages ─────────────── */
+.flash-alert {
+  width: 95%;
+  max-width: 900px;
+  background-color: #ffcfca;
+  border: solid 0.25rem #f21701;
+  border-radius: 0.5rem;
+  color: #3c0600;
+  padding: 0.75rem 1rem;
+  margin: 1rem auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ─────────────── Field Error Styling ─────────────── */
+main form label.field-error {
+  color: #f21701;
+}
+main form input[type="text"].field-error,
+main form input[type="date"].field-error {
+  background-color: #ffcfca;
+  color: #3c0600;
+  border-color: #f21701;
+}
+main form .field-error-info {
+  color: #f21701;
+  font-size: 0.75rem;
+  min-height: 1.25rem;
+  margin: 0.125rem 0 0 0;
+}

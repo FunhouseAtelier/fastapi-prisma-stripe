@@ -1,0 +1,147 @@
+generator client {
+  provider = "prisma-client-py"
+  output   = "../prisma_client"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Associate {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  name             String
+  business_name    String?
+  street_address_1 String
+  street_address_2 String?
+  city             String
+  state            String
+  zip_code         String
+  phone            String
+  email            String  @unique
+
+  username              String    @unique
+  password              String?
+  salt                  String
+  salt_last_revealed_at DateTime?
+  locked_at             DateTime?
+
+  w9_updated_at DateTime
+  ssn           String?  @unique(map: "ssn_1")
+  tin           String?  @unique(map: "tin_1")
+  roles         String[]
+
+  audited_order_ids String[] @db.ObjectId
+  audited_orders    Order[]  @relation("AuditedOrders")
+
+  sales_client_ids String[] @db.ObjectId
+  sales_clients    Client[] @relation("SalesClients", fields: [sales_client_ids], references: [id])
+
+  sales_order_ids String[] @db.ObjectId
+  sales_orders    Order[]  @relation("SalesOrders", fields: [sales_order_ids], references: [id])
+
+  tech_client_ids String[] @db.ObjectId
+  tech_clients    Client[] @relation("TechClients", fields: [tech_client_ids], references: [id])
+
+  tech_order_ids String[] @db.ObjectId
+  tech_orders    Order[]  @relation("TechOrders", fields: [tech_order_ids], references: [id])
+}
+
+model Client {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  account_number String @unique
+  status         String @default("prospect")
+
+  contact_name String
+  email        String @unique
+  phone        String
+
+  business_name    String?
+  street_address_1 String
+  street_address_2 String?
+  city             String
+  state            String
+  zip_code         String
+
+  order_ids String[] @db.ObjectId
+  orders    Order[]  @relation("ClientOrders")
+
+  sales_associate_ids String[]    @db.ObjectId
+  sales_associates    Associate[] @relation("SalesClients", fields: [sales_associate_ids], references: [id])
+
+  tech_associate_ids String[]    @db.ObjectId
+  tech_associates    Associate[] @relation("TechClients", fields: [tech_associate_ids], references: [id])
+}
+
+model Product {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  name        String
+  description String?
+  unit        String
+  unit_price  Int
+
+  lineitem_ids String[]   @db.ObjectId
+  lineitems    LineItem[] @relation("ProductLineItems")
+}
+
+model LineItem {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  qty Int
+
+  product_id String   @db.ObjectId
+  product    Product  @relation("ProductLineItems", fields: [product_id], references: [id])
+  order_ids  String[] @db.ObjectId
+  orders     Order[]  @relation("OrderLineItems", fields: [order_ids], references: [id])
+}
+
+model Order {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  invoice_number String
+  status         String
+
+  sales_tax       Int
+  total_due       Int
+  transaction_fee Int
+  revenue         Int
+
+  sales_commission Int?
+  tech_commission  Int?
+  company_cut      Int?
+
+  stripe_payment_intent_id String?
+  stripe_invoice_id        String?
+  stripe_status            String?
+
+  audited_at  DateTime?
+  audit_notes String?
+
+  audited_by_id String?    @db.ObjectId
+  audited_by    Associate? @relation("AuditedOrders", fields: [audited_by_id], references: [id])
+
+  client_id String @db.ObjectId
+  client    Client @relation("ClientOrders", fields: [client_id], references: [id])
+
+  sales_associate_ids String[]    @db.ObjectId
+  sales_associates    Associate[] @relation("SalesOrders", fields: [sales_associate_ids], references: [id])
+
+  tech_associate_ids String[]    @db.ObjectId
+  tech_associates    Associate[] @relation("TechOrders", fields: [tech_associate_ids], references: [id])
+
+  lineitem_ids String[]   @db.ObjectId
+  lineitems    LineItem[] @relation("OrderLineItems", fields: [lineitem_ids], references: [id])
+}

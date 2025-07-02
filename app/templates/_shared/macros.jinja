@@ -1,0 +1,9 @@
+{# app/templates/_shared/macros.jinja #}
+
+{% macro render_flash(flash) %}
+  {% for msg in flash %}
+    <div class="flash-alert">
+      {{ msg }}
+    </div>
+  {% endfor %}
+{% endmacro %}

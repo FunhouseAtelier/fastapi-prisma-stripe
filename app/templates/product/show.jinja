@@ -1,0 +1,21 @@
+{# app/templates/product/show.jinja #}
+
+{% extends "_shared/show.jinja" %}
+
+{% set mod_title = "Product" %}
+{% set mod_name = "product" %}
+{% set edit_handler = "get_edit_product" %}
+{% set all_handler = "get_all_products" %}
+
+{% block info %}
+  {% set name = product.name %}
+  {% set description = product.description or '' %}
+  {% set unit = product.unit %}
+  {% set unit_price = product.unit_price %}
+  
+  <h2>{{ name }}</h2>
+  <h3>Unit:</h3>
+  <p>{{ unit }}</p>
+  <h3>Unit Price:</h3>
+  <p>{{ unit_price|format_price }}</p>
+{% endblock info %}

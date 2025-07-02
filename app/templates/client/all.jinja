@@ -1,0 +1,25 @@
+{# app/templates/client/all.jinja #}
+
+{% extends "_shared/all.jinja" %}
+
+{% set mod_title = "Client" %}
+{% set mod_name = "client" %}
+{% set new_handler = "get_new_client" %}
+
+{% block info %}
+  {% for client in clients %}
+    {% set id58 = id58_by_id[client.id] %}
+          
+    <div class="{{ mod_name }}-line">
+      <a href="{{ url_for('get_show_' ~ mod_name, id58=id58) }}"><h2>{{ client.account_number }}</h2></a>
+      {% if client.business_name %}
+        <p>{{ client.business_name }}</p>
+      {% else %}
+        <p>{{ client.contact_name }}</p>
+      {% endif %}
+      <p>{{ client.city }}, {{ client.state }}  {{ client.zip_code }}</p>
+      <p>{{ client.phone }}</p>
+      <p>{{ client.status }}</p>
+    </div>
+  {% endfor %}
+{% endblock info %}

@@ -1,0 +1,34 @@
+{# app/templates/product/new.jinja #}
+
+{% extends "_shared/new.jinja" %}
+{% from "_shared/macros.jinja" import field %}
+
+{% set mod_title = "Product" %}
+{% set mod_name = "product" %}
+{% set create_handler = "post_new_product" %}
+
+{% block form_fields %}
+  {% set text_field = "components/fields/text.jinja" %}
+  {% set price_field = "components/fields/price.jinja" %}
+    
+  {% set field = {
+    "label": "Name",
+    "name": "name"} %}
+  {% include text_field %}
+
+  {% if form.description %}
+    {% set field = {
+      "label": "Description",
+      "name": "description"} %}
+    {% include text_field %}
+  {% endif %}
+  
+  {% set field = {
+    "label": "Unit",
+    "name": "unit"} %}
+  {% include text_field %}
+
+  {% set field = {"label":"Unit Price", "name":"unit_price"} %}
+  {% include price_field %}
+
+{% endblock form_fields %}

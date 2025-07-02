@@ -1,0 +1,20 @@
+{# app/templates/product/all.jinja #}
+
+{% extends "_shared/all.jinja" %}
+
+{% set mod_title = "Product" %}
+{% set mod_name = "product" %}
+{% set new_handler = "get_new_product" %}
+
+{% block info %}
+  {% for product in products %}
+    {% set id58 = id58_by_id[product.id] %}
+
+    <div class="{{ mod_name }}-line">
+      <a href="{{ url_for('get_show_' ~ mod_name, id58=id58) }}">
+        <h2>{{ product.name }}</h2>
+      </a>
+      <p>{{ product.unit_price|format_price }} / {{ product.unit }}</p>
+    </div>
+  {% endfor %}
+{% endblock info %}

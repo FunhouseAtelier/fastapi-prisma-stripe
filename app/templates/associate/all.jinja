@@ -1,0 +1,24 @@
+{# app/templates/associate/all.jinja #}
+
+{% extends "_shared/all.jinja" %}
+
+{% set mod_title = "Associate" %}
+{% set mod_name = "associate" %}
+{% set new_handler = "get_new_associate" %}
+
+{% block info %}
+  {% for associate in associates %}
+    {% set id58 = id58_by_id[associate.id] %}
+    {% set w9_updated_at = associate.w9_updated_at|format_date %}
+    
+    <div class="{{ mod_name }}-line">
+      <a href="{{ url_for('get_show_associate', id58=id58) }}">
+      <h2>{{ associate.name }}</h2>
+      </a>
+      <p>{{ associate.username }}</p>
+      <p>{{ associate.city }}, {{ associate.state }} {{ associate.zip_code }}</p>
+      <p>{{ associate.phone }}</p>
+      <p>W-9: {{ w9_updated_at }}</p>
+    </div>
+  {% endfor %}
+{% endblock info %}

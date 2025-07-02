@@ -1,0 +1,60 @@
+{# app/templates/associate/delete.jinja #}
+
+{% extends "_shared/delete.jinja" %}
+
+{% set mod_title = "Associate" %}
+{% set mod_name = "associate" %}
+{% set edit_handler = "get_edit_associate" %}
+
+{% block confirm %}
+  {% set name = associate.name %}
+  {% set business_name = associate.business_name if associate.business_name else '' %}
+  {% set street_address_1 = associate.street_address_1 %}
+  {% set street_address_2 = associate.street_address_2 if associate.street_address_2 else '' %}
+  {% set city = associate.city %}
+  {% set state = associate.state %}
+  {% set zip_code = associate.zip_code %}
+  {% set email = associate.email %}
+  {% set username = associate.username %}
+  {% set w9_updated_at = associate.w9_updated_at %}
+  {% set ssn = associate.ssn if associate.ssn else '' %}
+  {% set tin = associate.tin if associate.tin else '' %}
+
+  <h2 class="danger">ARE YOU SURE?</h2>
+  <p>The associate will be permanently removed from the company database. This action cannot be undone!</p>
+  <form method="post" class="button-group">
+    <button class="delete">
+      Confirm Delete
+    </button>
+    <a href="{{ url_for('get_edit_associate', id58=id58) }}" class="cancel">Cancel</a>
+  </form>
+  <h2>{{ name }}</h2>
+  {% if business_name %}
+    <h3>Business Name:</h3>
+    <p>{{ business_name }}</p>
+  {% endif %}
+  <h3>Address:</h3>
+  <p>{{ street_address_1 }}</p>
+  {% if street_address_2 %}
+    <p>{{ street_address_2 }}</p>
+  {% endif %}
+  <p>{{ city }}, {{ state }}  {{ zip_code }}</p>
+  <h3>Email:</h3>
+  <p>{{ email }}</p>
+  <h3>Username:</h3>
+  <p>{{ username }}</p>
+  <h3>W-9 Last Updated:</h3>
+  <p>{{ w9_updated_at }}</p>
+  {% if ssn %}
+    <h3>Social Security Number:</h3>
+    <p>{{ ssn }}</p>
+  {% endif %}
+  {% if tin %}
+    <h3>Tax Identification Number:</h3>
+    <p>{{ tin }}</p>
+  {% endif %}
+  <h3>Roles:</h3>
+  {% for role in associate.roles %}
+    <p>{{ role }}</p>
+  {% endfor %}
+{% endblock confirm %}

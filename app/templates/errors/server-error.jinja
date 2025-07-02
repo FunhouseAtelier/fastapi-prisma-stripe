@@ -1,0 +1,15 @@
+{# app/templates/errors/server-error.jinja #}
+
+{% extends "__layout.jinja" %}
+
+{% block title %}
+  Not Found
+{% endblock title %}
+
+{% block content %}
+  <div class="error-wrapper">
+    <h1>500 - Server Error</h1>
+    <p>Something went wrong:</p>
+    <p>{{ failure }}</p>
+  </div>
+{% endblock content %}

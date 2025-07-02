@@ -1,0 +1,18 @@
+# flyctl launch added from .gitignore
+# .gitignore
+
+__
+**/.venv
+**/.env
+**/prisma_client
+**/.ruff_cache
+
+# Ignore all __pycache__ folders and compiled files
+**/__pycache__
+**/**/__pycache__
+**/*.py[cod]
+
+# flyctl launch added from .ruff_cache/.gitignore
+# Automatically created by ruff.
+.ruff_cache/**/*
+fly.toml

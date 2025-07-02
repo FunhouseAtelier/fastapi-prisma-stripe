@@ -1,0 +1,114 @@
+{# app/templates/order/edit.jinja #}
+
+{% extends "_shared/edit.jinja" %}
+{% from "_shared/macros.jinja" import field %}
+
+{% set mod_title = "Order" %}
+{% set mod_name = "order" %}
+{% set show_handler = "get_show_order" %}
+{% set update_handler = "post_edit_order" %}
+{% set delete_handler = "get_delete_order" %}
+
+{% block form_fields %}
+{% set price_field = "components/fields/price.jinja" %}
+  {% set select_field = "components/fields/select.jinja" %}
+  {% set multiselect_field = "components/fields/multiselect.jinja" %}
+  {% set textarea_field = "components/fields/textarea.jinja" %}
+  {% set date_field = "components/fields/date.jinja" %}
+
+  {# --- Order Status (enum) --- #}
+  {% set field = {
+    "label": "Order Status",
+    "name": "status",
+    "options": ["pending", "paid", "completed", "disputed", "refunded", "failed", "expired"],
+    "unselect": true,
+  } %}
+  {% include select_field %}
+
+  {# --- Client --- #}
+  {% set options = [] %}
+  {% for c in clients %}
+    {% set label = c.contact_name %}
+    {% if c.business_name %}
+      {% set label = label ~ " (" ~ c.business_name ~ ")" %}
+    {% endif %}
+    {% set label = label ~ " [" ~ c.account_number ~ "]" %}
+    {% set _ = options.append({"value": c.id, "label": label}) %}
+  {% endfor %}
+  {% set field = {
+    "label": "Client",
+    "name": "client_id",
+    "options": options,
+    "unselect": true,
+  } %}
+  {% include select_field %}
+
+  {% set field = {"label":"Sales Tax %", "name":"sales_tax"} %}
+  {% include price_field %}
+
+  {# --- Sales Associates (multi-select, max 2) --- #}
+  {% set options = [] %}
+  {% for a in associates %}
+    {% set label = a.username %}
+    {% if a.name %}
+      {% set label = label ~ " (" ~ a.name ~ ")" %}
+    {% endif %}
+    {% set _ = options.append({"value": a.id, "label": label}) %}
+  {% endfor %}
+  {% set field = {
+    "label": "Sales Associate(s)",
+    "name": "sales_associate_ids",
+    "options": options,
+    "max": 2
+  } %}
+  {% include multiselect_field %}
+
+  {# --- Tech Associates (multi-select, max 2) --- #}
+  {% set options = [] %}
+  {% for a in associates %}
+    {% set label = a.username %}
+    {% if a.name %}
+      {% set label = label ~ " (" ~ a.name ~ ")" %}
+    {% endif %}
+    {% set _ = options.append({"value": a.id, "label": label}) %}
+  {% endfor %}
+  {% set field = {
+    "label": "Tech Associate(s)",
+    "name": "tech_associate_ids",
+    "options": options,
+    "required": true,
+    "max": 2
+  } %}
+  {% include multiselect_field %}
+
+  {# --- Audited By (associate) --- #}
+  {% set options = [] %}
+  {% for a in associates %}
+    {% set label = a.username %}
+    {% if a.name %}
+      {% set label = label ~ " (" ~ a.name ~ ")" %}
+    {% endif %}
+    {% set _ = options.append({"value": a.id, "label": label}) %}
+  {% endfor %}
+  {% set field = {
+    "label": "Audited By",
+    "name": "audited_by_id",
+    "options": options,
+    "required": false,
+  } %}
+  {% include select_field %}
+
+  {% set field = {
+    "label":"Audit Notes",
+    "name":"audit_notes",
+    "required": false,
+  } %}
+  {% include textarea_field %}
+
+  {% set field = {
+    "label": "Audited At",
+    "name": "audited_at",
+    "required": false,  
+  } %}
+  {% include date_field %}
+{% endblock form_fields %}

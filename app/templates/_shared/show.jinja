@@ -1,0 +1,22 @@
+{# app/templates/_shared/show.jinja #}
+
+{% extends "__layout.jinja" %}
+
+{% block title %}Show {{ mod_title }}{% endblock title %}
+
+{% block content %}
+  <main class="xl show">
+    <a href="{{ url_for(edit_handler, id58=id58) }}" class="edit-icon" aria-label="Back">
+      ✎
+    </a>
+    <a href="{{ url_for('get_home') }}" class="close-icon" aria-label="Close">
+      🗙
+    </a>
+    <h1>Show {{ mod_title }}</h1>
+    {% block info %}{% endblock info %}
+    <div class="button-group">
+      <a href="{{ url_for(edit_handler, id58=id58) }}">Edit {{ mod_title }}</a>
+      <a href="{{ url_for(all_handler) }}" class="cancel">Cancel</a>
+    </div>
+  </main>
+{% endblock content %}

@@ -1,0 +1,79 @@
+{# app/templates/associate/edit.jinja #}
+
+{% extends "_shared/edit.jinja" %}
+{% from "_shared/macros.jinja" import field %}
+
+{% set mod_title = "Associate" %}
+{% set mod_name = "associate" %}
+{% set show_handler = "get_show_associate" %}
+{% set update_handler = "post_edit_associate" %}
+{% set delete_handler = "get_delete_associate" %}
+
+{% block form_fields %}
+  {% set date_field = "components/fields/date.jinja" %}
+  {% set multicheck_field = "components/fields/multicheck.jinja" %}
+  {% set text_field = "components/fields/text.jinja" %}
+    
+  {% set field = {"label":"Full Name", "name":"name"} %}
+  {% include text_field %}
+
+  {% set field = {
+    "label": "Business Name",
+    "name": "business_name",
+    "required": false} %}
+  {% include text_field %}
+
+  {% set field = {
+    "label": "Street Address 1",
+    "name": "street_address_1"} %}
+  {% include text_field %}
+
+  {% set field = {
+    "label": "Street Address 2",
+    "name": "street_address_2",
+    "required": false} %}
+  {% include text_field %}
+
+  {% set field = {"label":"City", "name":"city"} %}
+  {% include text_field %}
+
+  {% set field = {"label":"State", "name":"state"} %}
+  {% include text_field %}
+
+  {% set field = {"label":"ZIP Code", "name":"zip_code"} %}
+  {% include text_field %}
+
+  {% set field = {"label":"Phone Number", "name":"phone"} %}
+  {% include text_field %}
+
+  {% set field = {"label":"Email Address", "name":"email"} %}
+  {% include text_field %}
+
+  {% set field = {"label":"Username", "name":"username"} %}
+  {% include text_field %}
+
+  {% set field = {"label":"W-9 Last Updated", "name":"w9_updated_at"} %}
+  {% include date_field %}
+
+  {% set field = {
+    "label": "Social Security Number",
+    "name": "ssn",
+    "required": false} %}
+  {% include text_field %}
+
+  {% set field = {
+    "label": "Tax Identification Number",
+    "name": "tin",
+    "required": false} %}
+  {% include text_field %}
+
+  {% set field = {
+    "label": "Roles",
+    "name": "roles",
+    "options": [
+      {"label": "Admin", "value": "admin"},
+      {"label": "Sales", "value": "sales"},
+      {"label": "Tech", "value": "tech"}
+    ]} %}
+  {% include multicheck_field %}
+{% endblock form_fields %}
