@@ -3,6 +3,7 @@
 /__/
 .venv
 .env
+.env.production
 .ruff_cache/
 prisma_client/
 node_modules/

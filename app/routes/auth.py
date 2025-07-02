@@ -6,7 +6,7 @@ from starlette.status import HTTP_303_SEE_OTHER
 
 from app.utils.db.associate import get_associate_by_username, update_associate
 from app.utils.flash import get_flashes
-from app.utils.format import force_string_to_list
+from app.utils.format import force_string_to_list, encode_id
 from app.utils.security import verify_password, generate_salt, hash_password
 from app.utils.session import create_session, force_password_reset_required, clear_session
 from app.utils.templates import render
@@ -15,10 +15,10 @@ router = APIRouter()
 
 @router.get("/login")
 async def get_login(request: Request):
-    if not request.session.get("associate_id"):
+    if request.session.get("associate_id"):
         return RedirectResponse("/", status_code=303)
     # Clear any existing session (optional: avoids stale login)
-    clear_session()
+    clear_session(request)
     return render(
         "login.jinja",
         request,
@@ -29,8 +29,8 @@ async def get_login(request: Request):
     )
 
 @router.post("/login")
-async def login(request: Request):
-    
+async def post_login(request: Request):
+
     form = getattr(request.state, "form", {}) or {}
     username = form.get("username")
     password = form.get("password")
@@ -45,38 +45,89 @@ async def login(request: Request):
         },
       )
 
-    associate = await get_associate_by_username(username)
+    result = await get_associate_by_username(username)
+    if "failure" in result:
+        fail = result["failure"]
+        if fail["type"] == "db":
+            return render(
+                "login.jinja",
+                request,
+                {
+                    "form": form,
+                    "flash": force_string_to_list(fail["msg"]),
+                },
+            )
+        elif fail["type"] == "not_found":
+            return render(
+                "login.jinja",
+                request,
+                {
+                    "form": form,
+                    "flash": force_string_to_list("Invalid credentials."),
+                },
+            )
+        return render("errors/server-error.jinja", request, {"failure": fail})
+    associate = result["success"]["associate"]
 
     if not associate or associate.locked_at is not None:
-        request.session["flash"] = ["Invalid credentials."]
-        return RedirectResponse("/login", status_code=303)
+        return render(
+            "login.jinja",
+            request,
+            {
+                "form": form,
+                "flash": force_string_to_list("Invalid credentials."),
+            },
+        )
 
     if associate.password is None:
         # First login: using temporary password (first 12 of salt)
         if password != associate.salt[:12]:
-            request.session["flash"] = ["Invalid temporary password."]
-            return RedirectResponse("/login", status_code=303)
+            print("form password does not match temporary password in database")
+            return render(
+                "login.jinja",
+                request,
+                {
+                    "form": form,
+                    "flash": force_string_to_list("Invalid temporary password."),
+                },
+            )
 
         # Valid temp login — must set password
-        create_session(request, associate.id)
+        create_session(request, associate.id, associate.roles)
         force_password_reset_required(request)
         return RedirectResponse("/auth/set-password", status_code=303)
 
     # Regular login flow
     if not verify_password(password, associate.password, associate.salt):
+        print("form password does not match personal password in database")
         request.session["flash"] = ["Invalid credentials."]
-        return RedirectResponse("/login", status_code=303)
+        return render(
+            "login.jinja",
+            request,
+            {
+                "form": form,
+                "flash": force_string_to_list("Invalid credentials."),
+            },
+        )
 
-    create_session(request, associate.id)
+    print("PASS: logging in and redirecting to home page...")
+    create_session(request, associate.id, associate.roles)
     return RedirectResponse("/", status_code=303)
 
 @router.get("/auth/set-password")
 async def get_set_password(request: Request):
     
-    if not request.session.get("associate_id") or not request.session.get("must_reset_password"):
-        return RedirectResponse("/", status_code=303)
+    if not request.session.get("associate_id"):
+        return RedirectResponse("/login", status_code=303)
     
-    return render("set-password.jinja", request)
+    return render(
+        "set-password.jinja",
+        request,
+        {
+            "form": getattr(request.state, "form", {}) or {},
+            "flash": get_flashes(request),
+        },
+    )
 
 @router.post("/auth/set-password")
 async def post_set_password(request: Request):
@@ -111,11 +162,10 @@ async def post_set_password(request: Request):
     new_salt = generate_salt()
     new_hash = hash_password(password, new_salt)
 
-    result = await update_associate(associate_id, {
+    result = await update_associate(encode_id(associate_id), {
         "password": new_hash,
         "salt": new_salt
     })
-
     if "failure" in result:
         fail = result["failure"]
         if fail["type"] == "db":
@@ -143,7 +193,7 @@ async def post_set_password(request: Request):
     return RedirectResponse("/", status_code=303)
 
 @router.get("/logout")
-async def logout(request: Request):
-  clear_session()
-  request.session["flash"] = ["You’ve been logged out."]
+async def get_logout(request: Request):
+  clear_session(request)
+  request.session["flash"] = ["You are now logged out."]
   return RedirectResponse("/login", status_code=303)

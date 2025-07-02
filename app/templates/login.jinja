@@ -1,17 +1,29 @@
+{# app/templates/login.jinja #}
+
 {% extends "__layout.jinja" %}
 
 {% block title %}Log In{% endblock title %}
 
 {% block content %}
-  <h1>Log In</h1>
+  <main class="xl auth">
+    <h1>Login</h1>
+    <form method="post">
+    {% set text_field = "components/fields/text.jinja" %}
+    {% set password_field = "components/fields/password.jinja" %}
+    
+    {% set field = {
+      "label": "Username",
+      "name": "username"} %}
+    {% include text_field %}
+    
+    {% set field = {
+      "label": "Password",
+      "name": "password"} %}
+    {% include password_field %}
 
-  <form method="post">
-    <label for="username">Username</label>
-    <input name="username" value="{{ form.username | default('') }}" required>
-
-    <label for="password">Password</label>
-    <input type="password" name="password" required>
-
-    <button type="submit">Log In</button>
-  </form>
+    <div class="button-group">
+      <button>Login</button>
+    </div>
+    </form>
+  </main>
 {% endblock content %}

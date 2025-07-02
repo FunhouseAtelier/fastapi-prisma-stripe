@@ -18,3 +18,4 @@ def get_envar(key: str, default: str | None = None) -> str:
 ENV_MODE = get_envar("ENV_MODE", "production")
 DATABASE_URL = get_envar("DATABASE_URL", "")
 SESSION_SECRET = get_envar("SESSION_SECRET", "")
+AUTH_STATUS = get_envar("AUTH_STATUS", "")

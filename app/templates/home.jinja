@@ -8,6 +8,14 @@
   <main>
     <h1>Main Menu</h1>
     <div class="button-group">
+      <a href="{{ url_for('get_login') }}">
+        Login
+      </a>
+      <a href="{{ url_for('get_logout') }}">
+        Logout
+      </a>
+    </div>
+    <div class="button-group">
       <a href="{{ url_for('get_all_associates') }}">
         All Associates
       </a>

@@ -14,15 +14,16 @@ from app.utils.flash import get_flashes
 from app.utils.form import parse_record
 from app.utils.format import force_string_to_list
 from app.utils.router import APIRouter
+from app.utils.security import require_role
 from app.utils.templates import render
 from app.utils.validators.associate import validate_associate_form
 
 router = APIRouter(prefix="/associate")
 
-
 @router.get("/")
+@require_role("admin")
 async def get_all_associates(request: Request):
-
+    
     result = await read_all_associates()
     if "failure" in result:
         return render(
@@ -42,7 +43,10 @@ async def get_all_associates(request: Request):
 
 
 @router.get("/new")
+@require_role("admin")
 async def get_new_associate(request: Request):
+    
+   
     return render(
         "associate/new.jinja",
         request,
@@ -54,8 +58,9 @@ async def get_new_associate(request: Request):
 
 
 @router.post("/new")
+@require_role("admin")
 async def post_new_associate(request: Request):
-
+    
     result = await validate_associate_form("new", request)
     if "failure" in result:
         fail = result["failure"]
@@ -89,8 +94,9 @@ async def post_new_associate(request: Request):
 
 
 @router.get("/{id58}")
+@require_role("admin")
 async def get_show_associate(request: Request, id58: str):
-
+    
     result = await read_one_associate(id58)
     if "failure" in result:
         fail = result["failure"]
@@ -126,8 +132,9 @@ async def get_show_associate(request: Request, id58: str):
 
 
 @router.get("/{id58}/edit")
+@require_role("admin")
 async def get_edit_associate(request: Request, id58: str):
-
+    
     result = await read_one_associate(id58)
     if "failure" in result:
         fail = result["failure"]
@@ -165,8 +172,9 @@ async def get_edit_associate(request: Request, id58: str):
 
 
 @router.post("/{id58}/edit")
+@require_role("admin")
 async def post_edit_associate(request: Request, id58: str):
-
+    
     result = await validate_associate_form("edit", request)
     if "failure" in result:
         fail = result["failure"]
@@ -210,8 +218,9 @@ async def post_edit_associate(request: Request, id58: str):
 
 
 @router.get("/{id58}/delete")
+@require_role("admin")
 async def get_delete_associate(request: Request, id58: str):
-
+    
     result = await read_one_associate(id58)
     if "failure" in result:
         fail = result["failure"]
@@ -246,8 +255,9 @@ async def get_delete_associate(request: Request, id58: str):
     )
 
 @router.post("/{id58}/delete")
+@require_role("admin")
 async def post_delete_associate(request: Request, id58: str):
-
+    
     result = await delete_associate(id58)
     if "failure" in result:
         fail = result["failure"]

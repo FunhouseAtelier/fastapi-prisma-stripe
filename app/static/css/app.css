@@ -156,7 +156,8 @@ main.xl {
 
 /* ─────────────── New Associate Form ─────────────── */
 main.new form,
-main.edit form {
+main.edit form,
+main.auth form {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
@@ -168,7 +169,12 @@ main.new form textarea,
 main.edit form input[type="text"],
 main.edit form input[type="date"],
 main.edit form select,
-main.edit form textarea {
+main.edit form textarea,
+main.auth form input[type="text"],
+main.auth form input[type="password"],
+main.auth form input[type="date"],
+main.auth form select,
+main.auth form textarea {
   color: #01172d;
   font-size: 1rem;
   width: 100%;
@@ -178,7 +184,8 @@ main.edit form textarea {
   border-radius: 0.25rem;
 }
 main.new form label,
-main.edit form label {
+main.edit form label,
+main.auth form label {
   font-weight: 600;
 }
 main.new form input[type="text"],
@@ -192,6 +199,13 @@ main.edit form input[type="date"],
 main.edit form select,
 main.edit form textarea {
   background-color: #ede5db;
+}
+main.auth form input[type="text"],
+main.auth form input[type="password"],
+main.auth form input[type="date"],
+main.auth form select,
+main.auth form textarea {
+  background-color: #d2e8fe;
 }
 
 /* ─────────────── Navigation Icons ─────────────── */

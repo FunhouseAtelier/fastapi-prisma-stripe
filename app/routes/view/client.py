@@ -14,6 +14,7 @@ from app.utils.flash import get_flashes
 from app.utils.form import parse_record
 from app.utils.format import force_string_to_list
 from app.utils.router import APIRouter
+from app.utils.security import require_role
 from app.utils.templates import render
 from app.utils.validators.client import validate_client_form
 
@@ -21,6 +22,7 @@ router = APIRouter(prefix="/client")
 
 
 @router.get("/")
+@require_role(["admin", "sales"])
 async def get_all_clients(request: Request):
 
     result = await read_all_clients()
@@ -42,6 +44,7 @@ async def get_all_clients(request: Request):
 
 
 @router.get("/new")
+@require_role(["admin", "sales"])
 async def get_new_client(request: Request):
     return render(
         "client/new.jinja",
@@ -54,6 +57,7 @@ async def get_new_client(request: Request):
 
 
 @router.post("/new")
+@require_role(["admin", "sales"])
 async def post_new_client(request: Request):
 
     result = await validate_client_form("new", request)
@@ -89,6 +93,7 @@ async def post_new_client(request: Request):
 
 
 @router.get("/{id58}")
+@require_role(["admin", "sales"])
 async def get_show_client(request: Request, id58: str):
 
     result = await read_one_client(id58)
@@ -126,6 +131,7 @@ async def get_show_client(request: Request, id58: str):
 
 
 @router.get("/{id58}/edit")
+@require_role(["admin", "sales"])
 async def get_edit_client(request: Request, id58: str):
 
     result = await read_one_client(id58)
@@ -165,6 +171,7 @@ async def get_edit_client(request: Request, id58: str):
 
 
 @router.post("/{id58}/edit")
+@require_role(["admin", "sales"])
 async def post_edit_client(request: Request, id58: str):
 
     result = await validate_client_form("edit", request)
@@ -210,6 +217,7 @@ async def post_edit_client(request: Request, id58: str):
 
 
 @router.get("/{id58}/delete")
+@require_role(["admin"])
 async def get_delete_client(request: Request, id58: str):
 
     result = await read_one_client(id58)
@@ -247,6 +255,7 @@ async def get_delete_client(request: Request, id58: str):
 
 
 @router.post("/{id58}/delete")
+@require_role("admin")
 async def post_delete_client(request: Request, id58: str):
 
     result = await delete_client(id58)

@@ -10,6 +10,7 @@ from starlette.middleware.sessions import SessionMiddleware
 
 from app.middleware.form_data import FormDataMiddleware
 from app.middleware.password_reset_required import PasswordResetRequiredMiddleware
+from app.middleware.require_auth import AuthRequiredMiddleware
 from app.routes.auth import router as auth_router
 from app.routes.view.associate import router as associate_view_router
 from app.routes.view.client import router as client_view_router
@@ -31,6 +32,7 @@ middleware = [
     Middleware(SessionMiddleware, secret_key=SESSION_SECRET),
     Middleware(FormDataMiddleware),
     Middleware(PasswordResetRequiredMiddleware),
+    Middleware(AuthRequiredMiddleware),
 ]
 
 app = FastAPI(

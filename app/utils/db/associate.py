@@ -112,4 +112,16 @@ async def delete_associate(id58):
     return {"success": True}
 
 async def get_associate_by_username(username: str):
-    return await prisma.associate.find_unique(where={"username": username})
+    try:
+        associate = await prisma.associate.find_unique(where={"username": username})
+    except Exception as e:
+        return {"failure": {"type": "db", "msg": f"Database error: {str(e)}"}}
+    if not associate:
+        return {"failure": {"type": "not_found", "msg": "Associate not found"}}
+
+    return {
+        "success": {
+            "associate": associate,
+            "id58": encode_id(associate.id)
+        }
+    }
