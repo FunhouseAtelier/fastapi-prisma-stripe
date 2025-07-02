@@ -3,7 +3,6 @@
 /__/
 .venv
 .env
-prisma_client/
 .ruff_cache/
 
 # Ignore all __pycache__ folders and compiled files
