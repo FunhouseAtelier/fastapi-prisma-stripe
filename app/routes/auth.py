@@ -116,9 +116,6 @@ async def post_login(request: Request):
 @router.get("/auth/set-password")
 async def get_set_password(request: Request):
     
-    if not request.session.get("id58"):
-        return RedirectResponse("/login", status_code=303)
-    
     return render(
         "set-password.jinja",
         request,
@@ -154,10 +151,6 @@ async def post_set_password(request: Request):
         })
 
     id58 = request.session.get("id58")
-    if not id58:
-        request.session["flash"] = ["Invalid session."]
-        return RedirectResponse("/login", status_code=303)
-
     new_salt = generate_salt()
     new_hash = hash_password(password, new_salt)
 

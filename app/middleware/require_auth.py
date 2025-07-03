@@ -19,7 +19,6 @@ class AuthRequiredMiddleware(BaseHTTPMiddleware):
         public_paths = [
             "/login",
             "/logout",
-            "/auth/set-password",
             "/static",
         ]
         if any(path.startswith(p) for p in public_paths):
