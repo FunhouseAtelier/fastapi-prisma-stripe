@@ -15,7 +15,7 @@ router = APIRouter()
 
 @router.get("/login")
 async def get_login(request: Request):
-    if request.session.get("associate_id"):
+    if request.session.get("id58"):
         return RedirectResponse("/", status_code=303)
     # Clear any existing session (optional: avoids stale login)
     clear_session(request)
@@ -82,7 +82,6 @@ async def post_login(request: Request):
     if associate.password is None:
         # First login: using temporary password (first 12 of salt)
         if password != associate.salt[:12]:
-            print("form password does not match temporary password in database")
             return render(
                 "login.jinja",
                 request,
@@ -93,13 +92,13 @@ async def post_login(request: Request):
             )
 
         # Valid temp login — must set password
-        create_session(request, associate.id, associate.roles)
+        id58 = result["success"]["id58"]
+        await create_session(request, id58)
         force_password_reset_required(request)
         return RedirectResponse("/auth/set-password", status_code=303)
 
     # Regular login flow
     if not verify_password(password, associate.password, associate.salt):
-        print("form password does not match personal password in database")
         request.session["flash"] = ["Invalid credentials."]
         return render(
             "login.jinja",
@@ -110,14 +109,14 @@ async def post_login(request: Request):
             },
         )
 
-    print("PASS: logging in and redirecting to home page...")
-    create_session(request, associate.id, associate.roles)
+    id58 = result["success"]["id58"]
+    await create_session(request, id58)
     return RedirectResponse("/", status_code=303)
 
 @router.get("/auth/set-password")
 async def get_set_password(request: Request):
     
-    if not request.session.get("associate_id"):
+    if not request.session.get("id58"):
         return RedirectResponse("/login", status_code=303)
     
     return render(
@@ -154,15 +153,15 @@ async def post_set_password(request: Request):
             "flash": ["Password must be at least 8 characters."]
         })
 
-    associate_id = request.session.get("associate_id")
-    if not associate_id:
+    id58 = request.session.get("id58")
+    if not id58:
         request.session["flash"] = ["Invalid session."]
         return RedirectResponse("/login", status_code=303)
 
     new_salt = generate_salt()
     new_hash = hash_password(password, new_salt)
 
-    result = await update_associate(encode_id(associate_id), {
+    result = await update_associate(id58, {
         "password": new_hash,
         "salt": new_salt
     })

@@ -16,7 +16,7 @@ from app.utils.flash import get_flashes
 from app.utils.form import parse_record
 from app.utils.format import force_string_to_list
 from app.utils.router import APIRouter
-from app.utils.security import require_role
+from app.utils.security import require_role, is_admin, get_order_filter, get_client_filter
 from app.utils.templates import render
 from app.utils.validators.order import validate_order_form
 
@@ -27,7 +27,8 @@ router = APIRouter(prefix="/order")
 @require_role(["admin", "sales", "tech"])
 async def get_all_orders(request: Request):
 
-    result = await read_all_orders()
+    where = get_order_filter(request)
+    result = await read_all_orders(where)
     if "failure" in result:
         return render(
             "errors/server-error.jinja", request, {"failure": result["failure"]}
@@ -56,7 +57,8 @@ async def get_new_order(request: Request):
         )
     associates = result["success"]["associates"]
 
-    result = await read_all_clients()
+    where = get_client_filter(request)
+    result = await read_all_clients(where)
     if "failure" in result:
         return render(
             "errors/server-error.jinja", request, {"failure": result["failure"]}
@@ -138,6 +140,12 @@ async def get_show_order(request: Request, id58: str):
         return render("errors/server-error.jinja", request, {"failure": fail})
     order = result["success"]["order"]
 
+    if not is_admin(request):
+        allowed_ids = set(request.session.get("sales_order_ids", [])) | set(request.session.get("tech_order_ids", []))
+        if order.id not in allowed_ids:
+            request.session["flash"] = ["You do not have access to that order."]
+            return RedirectResponse("/order", status_code=303)
+
     return render(
         "order/show.jinja",
         request,
@@ -177,6 +185,12 @@ async def get_edit_order(request: Request, id58: str):
     order = result["success"]["order"]
     id58 = result["success"]["id58"]
 
+    if not is_admin(request):
+        allowed_ids = set(request.session.get("sales_order_ids", []))
+        if order.id not in allowed_ids:
+            request.session["flash"] = ["You do not have access to that order."]
+            return RedirectResponse("/order", status_code=303)
+
     result = await read_all_associates()
     if "failure" in result:
         return render(
@@ -184,7 +198,8 @@ async def get_edit_order(request: Request, id58: str):
         )
     associates = result["success"]["associates"]
 
-    result = await read_all_clients()
+    where = get_client_filter(request)
+    result = await read_all_clients(where)
     if "failure" in result:
         return render(
             "errors/server-error.jinja", request, {"failure": result["failure"]}
@@ -223,6 +238,12 @@ async def post_edit_order(request: Request, id58: str):
             },
         )
     order = result["success"]["order"]
+
+    if not is_admin(request):
+        allowed_ids = set(request.session.get("sales_order_ids", []))
+        if order.id not in allowed_ids:
+            request.session["flash"] = ["You do not have access to that order."]
+            return RedirectResponse("/order", status_code=303)
 
     result = await update_order(id58, order)
     if "failure" in result:

@@ -25,7 +25,7 @@ class AuthRequiredMiddleware(BaseHTTPMiddleware):
         if any(path.startswith(p) for p in public_paths):
             return await call_next(request)
 
-        if not session.get("associate_id"):
+        if not session.get("id58"):
             session["flash"] = ["Please log in to continue."]
             return RedirectResponse("/login", status_code=303)
 

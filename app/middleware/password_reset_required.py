@@ -8,18 +8,18 @@ class PasswordResetRequiredMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         session = request.session
         must_reset = session.get("must_reset_password")
-        associate_id = session.get("associate_id")
+        id58 = session.get("id58")
 
+        # Allow if not logged in or no reset needed
+        if not id58 or not must_reset:
+            return await call_next(request)
+        
         exempt_paths = {
             "/auth/set-password",
             "/logout",
             "/static",  # exclude static assets
             "/login"
         }
-
-        # Allow if not logged in or no reset needed
-        if not associate_id or not must_reset:
-            return await call_next(request)
 
         # Allow if current path is exempt (exact or prefix match)
         path = request.url.path

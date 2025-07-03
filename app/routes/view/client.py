@@ -14,7 +14,7 @@ from app.utils.flash import get_flashes
 from app.utils.form import parse_record
 from app.utils.format import force_string_to_list
 from app.utils.router import APIRouter
-from app.utils.security import require_role
+from app.utils.security import require_role, get_client_filter, is_admin
 from app.utils.templates import render
 from app.utils.validators.client import validate_client_form
 
@@ -22,10 +22,11 @@ router = APIRouter(prefix="/client")
 
 
 @router.get("/")
-@require_role(["admin", "sales"])
+@require_role(["admin", "sales", "tech"])
 async def get_all_clients(request: Request):
-
-    result = await read_all_clients()
+    
+    where = get_client_filter(request)
+    result = await read_all_clients(where)
     if "failure" in result:
         return render(
             "errors/server-error.jinja", request, {"failure": result["failure"]}
@@ -41,7 +42,6 @@ async def get_all_clients(request: Request):
             "flash": get_flashes(request),
         },
     )
-
 
 @router.get("/new")
 @require_role(["admin", "sales"])
@@ -93,7 +93,7 @@ async def post_new_client(request: Request):
 
 
 @router.get("/{id58}")
-@require_role(["admin", "sales"])
+@require_role(["admin", "sales", "tech"])
 async def get_show_client(request: Request, id58: str):
 
     result = await read_one_client(id58)
@@ -118,6 +118,12 @@ async def get_show_client(request: Request, id58: str):
             )
         return render("errors/server-error.jinja", request, {"failure": fail})
     client = result["success"]["client"]
+
+    if not is_admin(request):
+        allowed_ids = set(request.session.get("sales_client_ids", [])) | set(request.session.get("tech_client_ids", []))
+        if client.id not in allowed_ids:
+            request.session["flash"] = ["You do not have access to that client."]
+            return RedirectResponse("/client", status_code=303)
 
     return render(
         "client/show.jinja",
@@ -158,6 +164,12 @@ async def get_edit_client(request: Request, id58: str):
     client = result["success"]["client"]
     id58 = result["success"]["id58"]
 
+    if not is_admin(request):
+        allowed_ids = set(request.session.get("sales_client_ids", []))
+        if client.id not in allowed_ids:
+            request.session["flash"] = ["You do not have access to that client."]
+            return RedirectResponse("/client", status_code=303)
+
     parsed_record = parse_record(client)
     return render(
         "client/edit.jinja",
@@ -188,6 +200,12 @@ async def post_edit_client(request: Request, id58: str):
             },
         )
     client = result["success"]["client"]
+
+    if not is_admin(request):
+        allowed_ids = set(request.session.get("sales_client_ids", []))
+        if client.id not in allowed_ids:
+            request.session["flash"] = ["You do not have access to that client."]
+            return RedirectResponse("/client", status_code=303)
 
     result = await update_client(id58, client)
     if "failure" in result:

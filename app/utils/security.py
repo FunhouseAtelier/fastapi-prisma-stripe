@@ -1,5 +1,6 @@
 # app/utils/security.py
 
+
 import random
 import secrets
 import hashlib
@@ -8,7 +9,7 @@ from datetime import datetime, timezone
 from fastapi import Request
 from fastapi.responses import RedirectResponse
 from functools import wraps
-from typing import Callable, Union
+from typing import Callable, Union, Any
 
 from app.utils.prisma import prisma
 from app.utils.envars import AUTH_STATUS
@@ -65,3 +66,31 @@ def hash_password(password: str, salt: str) -> str:
 
 def verify_password(password: str, hashed: str, salt: str) -> bool:
     return hmac.compare_digest(hash_password(password, salt), hashed)
+
+def get_client_filter(request: Request) -> dict[str, Any] | None:
+    """Return a Prisma-compatible `where` clause for filtering visible clients."""
+    if AUTH_STATUS == "disabled":
+        return None  # No filtering
+
+    if is_admin(request):
+        return None  # No filter — full access
+
+    sales_ids = request.session.get("sales_client_ids", [])
+    tech_ids = request.session.get("tech_client_ids", [])
+
+    client_ids = set(sales_ids) | set(tech_ids)
+    return {"id": {"in": list(client_ids)}} if client_ids else {"id": {"in": []}}  # force empty
+
+def get_order_filter(request: Request) -> dict[str, Any] | None:
+    """Return a Prisma-compatible `where` clause for filtering visible clients."""
+    if AUTH_STATUS == "disabled":
+        return None  # No filtering
+
+    if is_admin(request):
+        return None  # No filter — full access
+
+    sales_ids = request.session.get("sales_order_ids", [])
+    tech_ids = request.session.get("tech_order_ids", [])
+
+    order_ids = set(sales_ids) | set(tech_ids)
+    return {"id": {"in": list(order_ids)}} if order_ids else {"id": {"in": []}}  # force empty
